@@ -2,6 +2,8 @@
 import paho.mqtt.client as paho
 import datetime
 import pymysql.cursors
+import configparser
+
 
 tempTopicName = "/home/fridge/XBeeSensor/temperature"
 batteryTopicName = "/home/fridge/XBeeSensor/batteryVoltage"
@@ -10,10 +12,14 @@ batteryTopicName = "/home/fridge/XBeeSensor/batteryVoltage"
 tempBuffer = None
 voltageBuffer = None
 
-mysql_host = "mysql.alexwarrior.cc"
-mysql_user = "precosky_fridge"
-mysql_passwd = "CFfFyHpZd8iTOEFSyZpy"
-mysql_db = "alexwarrior_fridge"
+config = configparser.ConfigParser()
+config.read("MQTTtoMySQL.conf")
+
+
+mysql_host = config.get("mysql", "mysql_host")
+mysql_user = config.get("mysql", "mysql_user")
+mysql_passwd = config.get("mysql", "mysql_passwd")
+mysql_db = config.get("mysql", "mysql_db")
 
 def transmitDatapoint( temperature, voltage):
 
@@ -21,7 +27,7 @@ def transmitDatapoint( temperature, voltage):
     timestamp = datetime.datetime.now()
 
     try:
-        print("Connecting to mysql...")
+        print("Connecting to mysql host %s as %s..." % (mysql_host, mysql_user))
         conn = pymysql.connect(host=mysql_host, user=mysql_user, passwd=mysql_passwd, db=mysql_db)
     except pymysql.err.OperationalError:
         print("Exception opening connection to mysql host")
