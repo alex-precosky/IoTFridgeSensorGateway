@@ -29,8 +29,8 @@ def transmitDatapoint( temperature, voltage):
     try:
         print("Connecting to mysql host %s as %s..." % (mysql_host, mysql_user))
         conn = pymysql.connect(host=mysql_host, user=mysql_user, passwd=mysql_passwd, db=mysql_db)
-    except pymysql.err.OperationalError:
-        print("Exception opening connection to mysql host")
+    except pymysql.err.OperationalError as e:
+        print("OperationaError opening connection to mysql host: %s" % e)
         return
 
     try:
@@ -49,6 +49,9 @@ def transmitDatapoint( temperature, voltage):
 
 def on_connect(client, userdata, rc):
     print("Connected to MQTT broker")
+    pahoClient.subscribe(tempTopicName,2)
+    pahoClient.subscribe(batteryTopicName,2)
+
 
 def on_message(client, userdata, msg):
     global tempBuffer
@@ -75,8 +78,6 @@ pahoClient = paho.Client()
 pahoClient.on_connect = on_connect
 pahoClient.on_message = on_message
 pahoClient.connect("localhost", 1883, 60)
-pahoClient.subscribe(tempTopicName,2)
-pahoClient.subscribe(batteryTopicName,2)
 
 
 pahoClient.loop_forever()

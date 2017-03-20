@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# For python 3
+# Needs the XBee package https://pypi.python.org/pypi/XBee
+
 import sys
 import datetime
 from xbee import XBee
