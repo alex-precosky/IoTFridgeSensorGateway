@@ -68,7 +68,7 @@ def main():
             response = xbee.wait_read_frame()
 
             print("XBee packet received")
-            print("Time: %s" % datetime.datetime.now().isoformat())
+            print("Time: %s RSSI: -%d dBm" % (datetime.datetime.now().isoformat(), ord(response['rssi'])))
             print(response['rf_data'])
 
             m = re.search('(?<=values=).[\d\.,]+', str(response['rf_data']))
